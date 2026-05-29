@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: myalbum_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: myalbum_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d myalbum_db"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 5s
+
+  backend:
+    build:
+      context: ./myalbum-backend
+      dockerfile: Dockerfile.dev
+    container_name: myalbum_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@db:5432/myalbum_db
+      - PORT=8080
+      - JWT_SECRET=KEY_TOKEN
+    volumes:
+      - ./myalbum-backend:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./myalbum-frontend
+      dockerfile: Dockerfile.dev
+    container_name: myalbum_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - WDS_SOCKET_HOST=localhost
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./myalbum-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -1,0 +1,22 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instalar dependências primeiro para aproveitar o cache de camadas do Docker
+COPY package*.json ./
+RUN npm install
+
+# Copiar a pasta prisma e gerar o cliente antes de copiar o resto do código
+COPY prisma ./prisma/
+RUN npx prisma generate
+
+# Copiar todo o resto do projeto
+COPY . .
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 8080
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["npm", "run", "dev"]

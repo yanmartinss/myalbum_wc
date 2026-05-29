@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instalar dependências primeiro para cache do Docker
+COPY package*.json ./
+RUN npm install
+
+# Copiar o restante do código
+COPY . .
+
+EXPOSE 3000
+
+# React scripts precisa disso para rodar sem travar em modo não-interativo no Docker
+ENV CI=true
+
+CMD ["npm", "start"]

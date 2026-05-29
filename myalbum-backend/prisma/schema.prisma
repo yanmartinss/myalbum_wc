@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+datasource db {
+  provider = "postgresql"
+}
+
+model Sticker {
+  id      String @id @default(uuid())
+  code    String @unique
+  country String
+  group   String
+
+  users      UserSticker[]
+  tradeItems TradeItem[]
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now())
+
+  collection   UserSticker[]
+  tradeHistory TradeHistory[]
+}
+
+model UserSticker {
+  id          String   @id @default(uuid())
+  userId      String
+  stickerId   String
+  code        String   @unique
+  quantidade  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  sticker Sticker @relation(fields: [stickerId], references: [id])
+
+  @@unique([userId, stickerId])
+}
+
+
+model TradeHistory {
+  id        String      @id @default(uuid())
+  userId    String
+  createdAt DateTime    @default(now())
+
+  user  User        @relation(fields: [userId], references: [id])
+  items TradeItem[]
+}
+
+model TradeItem {
+  id          String @id @default(uuid())
+  tradeId     String
+  stickerCode String
+  type        String
+  quantidade  Int     @default(1)
+
+  trade   TradeHistory @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+  sticker Sticker      @relation(fields: [stickerCode], references: [code])
+}
