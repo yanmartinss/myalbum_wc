@@ -43,6 +43,7 @@ const Login: React.FC = () => {
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
+        padding: 2,
         justifyContent: "center",
         position: "relative",
         overflow: "hidden",
@@ -174,18 +175,6 @@ const Login: React.FC = () => {
           <Link to="/cadastro" style={{ fontWeight: 600 }}>
             Cadastre-se
           </Link>
-        </Typography>
-
-        <Typography
-          variant="caption"
-          color="text.disabled"
-          align="center"
-          sx={{ display: "block", mt: 2, lineHeight: 1.6 }}
-        >
-          Este álbum é compartilhado entre dois usuários.
-          <br />
-          Qualquer alteração é sincronizada em tempo real!{" "}
-          <Sync sx={{ fontSize: 14, verticalAlign: "middle" }} />
         </Typography>
       </Paper>
     </Box>

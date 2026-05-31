@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useTema } from "../contexts/TemaContext";
@@ -8,21 +8,29 @@ import {
   History,
   LightMode,
   MenuBook,
+  Menu as MenuIcon,
   SwapHoriz,
 } from "@mui/icons-material";
 import {
   AppBar,
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Toolbar,
   Typography,
-  Button,
-  IconButton,
-  Box,
 } from "@mui/material";
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { mode, toggleTema } = useTema();
   const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const navLinks = [
     { to: "/album", label: "Álbum", icon: <MenuBook fontSize="inherit" /> },
@@ -42,24 +50,21 @@ const Navbar: React.FC = () => {
       sx={{ borderBottom: 1, borderColor: "divider" }}
     >
       <Toolbar sx={{ gap: 2 }}>
+        <IconButton
+          sx={{
+            display: { xs: "inline-flex", md: "none" },
+            color: "text.secondary",
+          }}
+          onClick={() => setDrawerOpen(true)}
+        >
+          <MenuIcon />
+        </IconButton>
+
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mr: "auto" }}>
           <EmojiEvents sx={{ color: "primary.main" }} />
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 800, letterSpacing: "-0.5px" }}
-          >
-            Copa 2026
-          </Typography>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Álbum Panini
-          </Typography>
         </Box>
 
-        <Box sx={{ display: "flex", gap: 0.5 }}>
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 0.5 }}>
           {navLinks.map(({ to, label, icon }) => (
             <Button
               key={to}
@@ -106,13 +111,6 @@ const Navbar: React.FC = () => {
               <DarkMode fontSize="small" />
             )}
           </IconButton>
-          {/* <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: { xs: 'none', md: 'block' }, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-          >
-            {user?.email}
-          </Typography> */}
           <Button
             size="small"
             variant="outlined"
@@ -128,6 +126,66 @@ const Navbar: React.FC = () => {
           </Button>
         </Box>
       </Toolbar>
+
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box
+          sx={{
+            width: 230,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, p: 2 }}>
+            <EmojiEvents sx={{ color: "primary.main" }} />
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 800, letterSpacing: "-0.5px" }}
+            >
+              Copa 2026
+            </Typography>
+          </Box>
+          <List>
+            {navLinks.map(({ to, label, icon }) => (
+              <ListItem key={to} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to={to}
+                  selected={location.pathname === to}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <ListItemIcon
+                    sx={{
+                      color:
+                        location.pathname === to ? "primary.main" : undefined,
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={label}
+                    slotProps={{
+                      primary: {
+                        sx: {
+                          fontWeight: location.pathname === to ? 600 : 400,
+                          color:
+                            location.pathname === to
+                              ? "primary.main"
+                              : "text.primary",
+                        },
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
     </AppBar>
   );
 };

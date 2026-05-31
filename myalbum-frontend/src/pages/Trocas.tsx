@@ -22,7 +22,10 @@ import {
   Alert,
   Chip,
 } from "@mui/material";
-import { CollectionItem, parseCollectionResponse } from "../utils/mapCollectionToAlbum";
+import {
+  CollectionItem,
+  parseCollectionResponse,
+} from "../utils/mapCollectionToAlbum";
 
 type FigurinhaResumo = {
   numero: string;
@@ -35,7 +38,12 @@ type SelecaoModal = "giving" | "receiving" | null;
 
 const Trocas: React.FC = () => {
   const { user } = useAuth();
-  const { album, carregando: storeCarregando, escutarAlbum, proporTroca } = useAlbumStore();
+  const {
+    album,
+    carregando: storeCarregando,
+    escutarAlbum,
+    proporTroca,
+  } = useAlbumStore();
 
   const token = localStorage.getItem("token");
   const usaApi = !!token;
@@ -89,26 +97,46 @@ const Trocas: React.FC = () => {
     if (usaApi) {
       return duplicates.map((i) => {
         const f = TODAS_FIGURINHAS.find((x) => x.numero === i.code);
-        return { numero: i.code, nome: f?.nome ?? i.code, pais: f?.pais, grupo: i.group };
+        return {
+          numero: i.code,
+          nome: f?.nome ?? i.code,
+          pais: f?.pais,
+          grupo: i.group,
+        };
       });
     }
     if (!album) return [];
     return TODAS_FIGURINHAS.filter(
       (f) => album.figurinhas[f.numero]?.estado === "repetida",
-    ).map((f) => ({ numero: f.numero, nome: f.nome, pais: f.pais, grupo: f.grupo }));
+    ).map((f) => ({
+      numero: f.numero,
+      nome: f.nome,
+      pais: f.pais,
+      grupo: f.grupo,
+    }));
   }, [usaApi, duplicates, album]);
 
   const faltam: FigurinhaResumo[] = useMemo(() => {
     if (usaApi) {
       return missing.map((i) => {
         const f = TODAS_FIGURINHAS.find((x) => x.numero === i.code);
-        return { numero: i.code, nome: f?.nome ?? i.code, pais: f?.pais, grupo: i.group };
+        return {
+          numero: i.code,
+          nome: f?.nome ?? i.code,
+          pais: f?.pais,
+          grupo: i.group,
+        };
       });
     }
     if (!album) return [];
     return TODAS_FIGURINHAS.filter(
       (f) => album.figurinhas[f.numero]?.estado === "faltam",
-    ).map((f) => ({ numero: f.numero, nome: f.nome, pais: f.pais, grupo: f.grupo }));
+    ).map((f) => ({
+      numero: f.numero,
+      nome: f.nome,
+      pais: f.pais,
+      grupo: f.grupo,
+    }));
   }, [usaApi, missing, album]);
 
   const outroUsuario = useMemo(() => {
@@ -118,18 +146,12 @@ const Trocas: React.FC = () => {
   }, [usaApi, album, user]);
 
   const givingItems = useMemo(
-    () =>
-      duplicates.length > 0
-        ? duplicates
-        : [],
+    () => (duplicates.length > 0 ? duplicates : []),
     [duplicates],
   );
 
   const receivingItems = useMemo(
-    () =>
-      missing.length > 0
-        ? missing
-        : [],
+    () => (missing.length > 0 ? missing : []),
     [missing],
   );
 
@@ -170,7 +192,10 @@ const Trocas: React.FC = () => {
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "response" in err
-          ? String((err as { response: { data: { error?: string } } }).response?.data?.error ?? "")
+          ? String(
+              (err as { response: { data: { error?: string } } }).response?.data
+                ?.error ?? "",
+            )
           : "";
       setErro(msg || "Erro ao registrar troca.");
     } finally {
@@ -214,14 +239,26 @@ const Trocas: React.FC = () => {
         }}
       >
         <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
-            <SwapHoriz color="primary" />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              textAlign: "center",
+              gap: 1.5,
+              mb: 0.5,
+            }}
+          >
             <Typography variant="h4" sx={{ fontWeight: 800 }}>
               Central de Trocas
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
-            Selecione as figurinhas repetidas que você quer dar e as que você quer receber
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "center" }}
+          >
+            Selecione as figurinhas repetidas que você quer dar e as que você
+            quer receber
           </Typography>
         </Box>
 
@@ -232,7 +269,11 @@ const Trocas: React.FC = () => {
         )}
 
         {erro && (
-          <Alert severity="error" sx={{ mb: 2.5 }} onClose={() => setErro(null)}>
+          <Alert
+            severity="error"
+            sx={{ mb: 2.5 }}
+            onClose={() => setErro(null)}
+          >
             {erro}
           </Alert>
         )}
@@ -284,7 +325,10 @@ const Trocas: React.FC = () => {
             </Typography>
 
             {repetidas.length === 0 ? (
-              <Typography color="text.secondary" sx={{ textAlign: "center", py: 5 }}>
+              <Typography
+                color="text.secondary"
+                sx={{ textAlign: "center", py: 5 }}
+              >
                 Nenhuma figurinha repetida ainda.
               </Typography>
             ) : (
@@ -299,7 +343,9 @@ const Trocas: React.FC = () => {
                 </Button>
 
                 {givingCodes.length > 0 && (
-                  <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                  <Box
+                    sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}
+                  >
                     {givingCodes.map((code) => {
                       const f = TODAS_FIGURINHAS.find((x) => x.numero === code);
                       return (
@@ -309,7 +355,9 @@ const Trocas: React.FC = () => {
                           size="small"
                           color="warning"
                           onDelete={() =>
-                            setGivingCodes((prev) => prev.filter((c) => c !== code))
+                            setGivingCodes((prev) =>
+                              prev.filter((c) => c !== code),
+                            )
                           }
                         />
                       );
@@ -352,7 +400,10 @@ const Trocas: React.FC = () => {
             </Typography>
 
             {faltam.length === 0 ? (
-              <Typography color="text.secondary" sx={{ textAlign: "center", py: 5 }}>
+              <Typography
+                color="text.secondary"
+                sx={{ textAlign: "center", py: 5 }}
+              >
                 Álbum completo! Sem figurinhas faltando.
               </Typography>
             ) : (
@@ -367,7 +418,9 @@ const Trocas: React.FC = () => {
                 </Button>
 
                 {receivingCodes.length > 0 && (
-                  <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                  <Box
+                    sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}
+                  >
                     {receivingCodes.map((code) => {
                       const f = TODAS_FIGURINHAS.find((x) => x.numero === code);
                       return (
@@ -377,7 +430,9 @@ const Trocas: React.FC = () => {
                           size="small"
                           color="error"
                           onDelete={() =>
-                            setReceivingCodes((prev) => prev.filter((c) => c !== code))
+                            setReceivingCodes((prev) =>
+                              prev.filter((c) => c !== code),
+                            )
                           }
                         />
                       );
@@ -396,22 +451,35 @@ const Trocas: React.FC = () => {
             sx={{
               p: 2.5,
               display: "flex",
-              alignItems: "center",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { sm: "center" },
               justifyContent: "space-between",
               gap: 2.5,
-              flexWrap: "wrap",
               borderColor: "primary.main",
             }}
           >
-            <Box>
-              <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                Você dá: <strong>{givingCodes.length}</strong> figurinha{givingCodes.length > 1 ? "s" : ""}
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: { xs: 0.5, sm: 2 } }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ textTransform: "uppercase", letterSpacing: "0.5px" }}
+              >
+                Você dá: <strong>{givingCodes.length}</strong> figurinha
+                {givingCodes.length > 1 ? "s" : ""}
               </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase", letterSpacing: "0.5px", ml: 2 }}>
-                Você recebe: <strong>{receivingCodes.length}</strong> figurinha{receivingCodes.length > 1 ? "s" : ""}
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Você recebe: <strong>{receivingCodes.length}</strong> figurinha
+                {receivingCodes.length > 1 ? "s" : ""}
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", gap: 1.25 }}>
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 1.25 }}>
               <Button
                 variant="contained"
                 color="success"

@@ -84,9 +84,7 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
 
   const toggleItem = (code: string) => {
     setTempSelected((prev) =>
-      prev.includes(code)
-        ? prev.filter((c) => c !== code)
-        : [...prev, code],
+      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code],
     );
   };
 
@@ -102,19 +100,29 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1, pr: 8 }}>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "center",
+          gap: 0.5,
+        }}
+      >
         {title}
         <Chip
           label={`${tempSelected.length} selecionada${tempSelected.length !== 1 ? "s" : ""}`}
           size="small"
           color="primary"
-          sx={{ ml: "auto", fontWeight: 600 }}
+          sx={{ alignSelf: "center", fontWeight: 600 }}
         />
       </DialogTitle>
 
       <DialogContent dividers sx={{ minHeight: 400 }}>
         {sorted.length === 0 ? (
-          <Typography color="text.secondary" sx={{ textAlign: "center", py: 8 }}>
+          <Typography
+            color="text.secondary"
+            sx={{ textAlign: "center", py: 8 }}
+          >
             {emptyMessage ?? "Nenhuma figurinha disponível."}
           </Typography>
         ) : (
@@ -123,15 +131,15 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: { sm: "center" },
                   justifyContent: "space-between",
                   gap: 1.5,
                   mb: 2,
-                  flexWrap: "wrap",
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <FormControl size="small" sx={{ minWidth: 140 }}>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: { sm: "center" }, gap: 1 }}>
+                  <FormControl size="small" sx={{ minWidth: 140, width: { xs: "100%", sm: "auto" } }}>
                     <InputLabel id="modal-grupo-label">Grupo</InputLabel>
                     <Select
                       labelId="modal-grupo-label"
@@ -150,25 +158,27 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
                     </Select>
                   </FormControl>
 
-                  <IconButton
-                    size="small"
-                    onClick={() => setPaginaGrupo((p) => Math.max(1, p - 1))}
-                    disabled={paginaGrupo <= 1}
-                  >
-                    <ChevronLeft />
-                  </IconButton>
-                  <Typography variant="caption" color="text.secondary">
-                    {paginaGrupo} / {totalPaginas}
-                  </Typography>
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      setPaginaGrupo((p) => Math.min(totalPaginas, p + 1))
-                    }
-                    disabled={paginaGrupo >= totalPaginas}
-                  >
-                    <ChevronRight />
-                  </IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: { xs: "center", sm: "flex-start" } }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => setPaginaGrupo((p) => Math.max(1, p - 1))}
+                      disabled={paginaGrupo <= 1}
+                    >
+                      <ChevronLeft />
+                    </IconButton>
+                    <Typography variant="caption" color="text.secondary">
+                      {paginaGrupo} / {totalPaginas}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        setPaginaGrupo((p) => Math.min(totalPaginas, p + 1))
+                      }
+                      disabled={paginaGrupo >= totalPaginas}
+                    >
+                      <ChevronRight />
+                    </IconButton>
+                  </Box>
                 </Box>
 
                 <Button
@@ -189,8 +199,9 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
                     }
                   }}
                 >
-                  {tempSelected.filter((c) => filtrados.some((f) => f.code === c)).length ===
-                  filtrados.length
+                  {tempSelected.filter((c) =>
+                    filtrados.some((f) => f.code === c),
+                  ).length === filtrados.length
                     ? "Desmarcar página"
                     : "Marcar página"}
                 </Button>
@@ -253,7 +264,10 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
                           <Checkbox
                             checked={isSelected}
                             size="small"
-                            sx={{ p: 0, "& .MuiSvgIcon-root": { fontSize: 18 } }}
+                            sx={{
+                              p: 0,
+                              "& .MuiSvgIcon-root": { fontSize: 18 },
+                            }}
                           />
                           <Box sx={{ minWidth: 0, flex: 1 }}>
                             <Typography
@@ -292,12 +306,12 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
+      <DialogActions sx={{ flexDirection: { xs: "column", sm: "row" }, px: 3, py: 2, gap: 1 }}>
         <Button
           variant="outlined"
           color="inherit"
           onClick={handleClose}
-          sx={{ color: "text.secondary", borderColor: "divider" }}
+          sx={{ color: "text.secondary", borderColor: "divider", width: { xs: "100%", sm: "auto" } }}
         >
           <Close sx={{ fontSize: 18 }} /> Cancelar
         </Button>
@@ -305,7 +319,7 @@ const SelecaoFigurinhasModal: React.FC<Props> = ({
           variant="contained"
           onClick={handleConfirm}
           disabled={tempSelected.length === 0}
-          sx={{ fontWeight: 700, gap: 0.5 }}
+          sx={{ fontWeight: 700, gap: 0.5, width: { xs: "100%", sm: "auto" } }}
         >
           <Check sx={{ fontSize: 18 }} /> Confirmar ({tempSelected.length})
         </Button>
