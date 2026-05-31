@@ -20,7 +20,7 @@ export async function importCsv() {
       rows = await csv({ noheader: true, delimiter: ";" }).fromFile(csvPath);
     } catch (err) {
       console.error(
-        "❌ Erro ao ler o arquivo CSV. Verifique se ele está na pasta 'assets'.",
+        "Erro ao ler o arquivo CSV. Verifique se ele está na pasta 'assets'.",
       );
       return;
     }
