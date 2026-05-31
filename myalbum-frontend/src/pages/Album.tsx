@@ -17,6 +17,7 @@ import {
   parseCollectionResponse,
   quantidadeParaEstado,
 } from "../utils/mapCollectionToAlbum";
+import BotaoCompartilhar from "../components/BotaoCompartilhar";
 import {
   Apps,
   CheckCircle,
@@ -274,6 +275,17 @@ export const Album = () => {
     buscaDebounced,
     modoBusca,
   ]);
+
+  const userIdFromToken = useMemo(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return "";
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.userId ?? "";
+    } catch {
+      return "";
+    }
+  }, []);
 
   if (carregando) {
     return (
@@ -584,6 +596,8 @@ export const Album = () => {
           </Box>
         )}
       </Box>
+
+      {userIdFromToken && <BotaoCompartilhar userId={userIdFromToken} />}
     </Box>
   );
 };

@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import Trocas from "./pages/Trocas";
 import Historico from "./pages/Historico";
+import AlbumCompartilhado from "./pages/AlbumCompartilhado";
 import "./index.css";
 import { Album } from "./pages/Album";
 
@@ -18,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/shared/:userId" element={<AlbumCompartilhado />} />
             <Route
               path="/album"
               element={
