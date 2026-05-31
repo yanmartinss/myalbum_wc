@@ -35,8 +35,7 @@ import {
   TextField,
   CircularProgress,
   InputAdornment,
-  ToggleButton,
-  ToggleButtonGroup,
+  Button,
   Paper,
   IconButton,
   Pagination,
@@ -325,13 +324,6 @@ export const Album = () => {
     );
   }
 
-  const handleEstadoChange = (
-    _: React.MouseEvent<HTMLElement>,
-    novo: FiltroEstado | null,
-  ) => {
-    if (novo) setFiltroEstado(novo);
-  };
-
   const irParaPagina = (pagina: number) => {
     if (pagina < 1 || pagina > totalPaginas) return;
     setPaginaGrupo(pagina);
@@ -358,14 +350,29 @@ export const Album = () => {
       >
         <Box sx={{ mb: 3 }}>
           <Box
-            sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1.5,
+              mb: 0.5,
+              textAlign: "center",
+            }}
           >
-            <EmojiEvents color="primary" />
-            <Typography variant="h4" sx={{ fontWeight: 800 }}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 800, textAlign: "center" }}
+            >
               Álbum Copa do Mundo 2026
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            sx={{
+              color: "text.secondary",
+              fontSize: "12px",
+              textAlign: "center",
+            }}
+          >
             Navegue página a página por grupo, como no álbum físico
           </Typography>
         </Box>
@@ -388,9 +395,9 @@ export const Album = () => {
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: { md: "center" },
               gap: 1.5,
-              flexWrap: "wrap",
             }}
           >
             <TextField
@@ -410,13 +417,12 @@ export const Album = () => {
               }}
             />
 
-            <ToggleButtonGroup
-              value={filtroEstado}
-              exclusive
-              onChange={handleEstadoChange}
-              size="small"
-              disabled={atualizandoLista}
-              sx={{ flexWrap: "wrap", gap: 0.5 }}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 0.5,
+              }}
             >
               {(
                 Object.entries(FILTRO_CONFIG) as [
@@ -424,98 +430,98 @@ export const Album = () => {
                   (typeof FILTRO_CONFIG)["todos"],
                 ][]
               ).map(([key, { icon, label }]) => (
-                <ToggleButton
+                <Button
                   key={key}
-                  value={key}
+                  size="small"
+                  variant={filtroEstado === key ? "contained" : "outlined"}
+                  disabled={atualizandoLista}
+                  onClick={() => setFiltroEstado(key)}
+                  startIcon={icon}
                   sx={{
-                    px: 1.5,
-                    py: 0.75,
                     textTransform: "none",
                     fontWeight: 500,
                     fontSize: "0.82rem",
-                    gap: 0.5,
-                    border: 1,
-                    borderColor: "divider",
-                    "&.Mui-selected": {
+                    justifyContent: { xs: "flex-start", sm: "center" },
+                    ...(filtroEstado === key && {
                       bgcolor: COR_FILTRO[key],
-                      color: "#fff",
                       "&:hover": { bgcolor: COR_FILTRO[key] },
-                    },
+                    }),
                   }}
                 >
-                  {icon} {label}
-                </ToggleButton>
+                  {label}
+                </Button>
               ))}
-            </ToggleButtonGroup>
+            </Box>
           </Box>
 
           {!modoBusca && totalPaginas > 0 && (
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { sm: "center" },
                 justifyContent: "space-between",
                 gap: 2,
-                flexWrap: "wrap",
                 pt: 0.5,
               }}
             >
+              <FormControl
+                size="small"
+                sx={{ minWidth: 160, width: { xs: "100%", sm: "auto" } }}
+              >
+                <InputLabel id="grupo-select-label">Grupo</InputLabel>
+                <Select
+                  labelId="grupo-select-label"
+                  value={grupoAtual ?? ""}
+                  label="Grupo"
+                  onChange={(e) => irParaGrupo(e.target.value)}
+                  disabled={atualizandoLista}
+                >
+                  {gruposOrdenados.map((g) => (
+                    <MenuItem key={g} value={g}>
+                      {g}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 1.5,
-                  flex: "0 1 auto",
+                  gap: 0.5,
+                  justifyContent: { xs: "center", sm: "flex-start" },
                 }}
               >
-                <FormControl size="small" sx={{ minWidth: 160 }}>
-                  <InputLabel id="grupo-select-label">Grupo</InputLabel>
-                  <Select
-                    labelId="grupo-select-label"
-                    value={grupoAtual ?? ""}
-                    label="Grupo"
-                    onChange={(e) => irParaGrupo(e.target.value)}
-                    disabled={atualizandoLista}
-                  >
-                    {gruposOrdenados.map((g) => (
-                      <MenuItem key={g} value={g}>
-                        {g}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <IconButton
+                  size="small"
+                  onClick={() => irParaPagina(paginaGrupo - 1)}
+                  disabled={paginaGrupo <= 1 || atualizandoLista}
+                  aria-label="Página anterior"
+                >
+                  <ChevronLeft />
+                </IconButton>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => irParaPagina(paginaGrupo - 1)}
-                    disabled={paginaGrupo <= 1 || atualizandoLista}
-                    aria-label="Página anterior"
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 700, lineHeight: 1.2 }}
                   >
-                    <ChevronLeft />
-                  </IconButton>
-
-                  <Box sx={{ textAlign: "center" }}>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{ fontWeight: 700, lineHeight: 1.2 }}
-                    >
-                      {grupoAtual}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {paginaGrupo} / {totalPaginas}
-                    </Typography>
-                  </Box>
-
-                  <IconButton
-                    size="small"
-                    onClick={() => irParaPagina(paginaGrupo + 1)}
-                    disabled={paginaGrupo >= totalPaginas || atualizandoLista}
-                    aria-label="Próxima página"
-                  >
-                    <ChevronRight />
-                  </IconButton>
+                    {grupoAtual}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {paginaGrupo} / {totalPaginas}
+                  </Typography>
                 </Box>
+
+                <IconButton
+                  size="small"
+                  onClick={() => irParaPagina(paginaGrupo + 1)}
+                  disabled={paginaGrupo >= totalPaginas || atualizandoLista}
+                  aria-label="Próxima página"
+                >
+                  <ChevronRight />
+                </IconButton>
               </Box>
             </Box>
           )}

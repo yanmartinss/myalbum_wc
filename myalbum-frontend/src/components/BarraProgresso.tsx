@@ -22,7 +22,12 @@ const BarraProgresso: React.FC<Props> = ({ collection, counts }) => {
   return (
     <Paper variant="outlined" sx={{ p: 2.5, mb: 3 }}>
       <Box
-        sx={{ display: "flex", gap: { xs: 2, md: 4 }, mb: 2, flexWrap: "wrap" }}
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 1.5, md: 4 },
+          mb: 2,
+        }}
       >
         {[
           { label: "Coladas", valor: tenho, cor: "success.main" },
@@ -32,7 +37,14 @@ const BarraProgresso: React.FC<Props> = ({ collection, counts }) => {
         ].map(({ label, valor, cor }) => (
           <Box
             key={label}
-            sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "row", md: "column" },
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: { xs: "100%", md: "auto" },
+              gap: 0.25,
+            }}
           >
             <Typography
               variant="h4"
@@ -73,7 +85,11 @@ const BarraProgresso: React.FC<Props> = ({ collection, counts }) => {
         />
         <Typography
           variant="body2"
-          sx={{ fontWeight: 600, color: "text.secondary", whiteSpace: "nowrap" }}
+          sx={{
+            fontWeight: 600,
+            color: "text.secondary",
+            whiteSpace: "nowrap",
+          }}
         >
           {percentual}% completo
         </Typography>
