@@ -9,9 +9,13 @@ import { importCsv } from "./scripts/importCsv.js";
 
 const server = express();
 
-server.use(cors());
+server.use(
+  cors({
+    origin: "https://myalbum-wc.vercel.app/",
+  }),
+);
 server.use(express.json());
-server.use("/api",routes);
+server.use("/api", routes);
 
 server.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
