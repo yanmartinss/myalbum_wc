@@ -9,14 +9,13 @@ import { importCsv } from "./scripts/importCsv.js";
 
 const server = express();
 
-server.use(cors({
-  origin: [
-    'https://myalbum-wc.vercel.app',
-    'https://myalbum-wc.vercel.app/' 
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+server.use(
+  cors({
+    origin: ["https://myalbum-wc.vercel.app", "https://myalbum-wc.vercel.app/"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 server.use(express.json());
 server.use("/api", routes);
 
